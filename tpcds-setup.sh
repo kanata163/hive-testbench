@@ -82,7 +82,7 @@ echo -e "all: ${DIMS} ${FACTS}" > $LOAD_FILE
 
 i=1
 total=24
-DATABASE=tpcds_bin_partitioned_${FORMAT}_${SCALE}
+DATABASE=tpcds_sf${SCALE}_${FORMAT}
 MAX_REDUCERS=2500 # maximum number of useful reducers for any scale 
 REDUCERS=$((test ${SCALE} -gt ${MAX_REDUCERS} && echo ${MAX_REDUCERS}) || echo ${SCALE})
 
@@ -90,7 +90,7 @@ REDUCERS=$((test ${SCALE} -gt ${MAX_REDUCERS} && echo ${MAX_REDUCERS}) || echo $
 for t in ${DIMS}
 do
 	COMMAND="hive -i settings/load-partitioned.sql -f ddl-tpcds/bin_partitioned/${t}.sql \
-	    -d DB=tpcds_bin_partitioned_${FORMAT}_${SCALE} -d SOURCE=tpcds_text_${SCALE} \
+	    -d DB=tpcds_sf${SCALE}_${FORMAT} -d SOURCE=tpcds_text_${SCALE} \
             -d SCALE=${SCALE} \
 	    -d REDUCERS=${REDUCERS} \
 	    -d FILE=${FORMAT}"
@@ -101,7 +101,7 @@ done
 for t in ${FACTS}
 do
 	COMMAND="hive -i settings/load-partitioned.sql -f ddl-tpcds/bin_partitioned/${t}.sql \
-	    -d DB=tpcds_bin_partitioned_${FORMAT}_${SCALE} \
+	    -d DB=tpcds_sf${SCALE}_${FORMAT} \
             -d SCALE=${SCALE} \
 	    -d SOURCE=tpcds_text_${SCALE} -d BUCKETS=${BUCKETS} \
 	    -d RETURN_BUCKETS=${RETURN_BUCKETS} -d REDUCERS=${REDUCERS} -d FILE=${FORMAT}"
